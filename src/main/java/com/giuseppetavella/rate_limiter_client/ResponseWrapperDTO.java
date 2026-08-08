@@ -1,4 +1,4 @@
-package com.giuseppetavella.rate_limiter_client.clients;
+package com.giuseppetavella.rate_limiter_client;
 
 import org.springframework.http.ResponseEntity;
 

@@ -1,4 +1,4 @@
-package com.giuseppetavella.rate_limiter_client.clients.email_api;
+package com.giuseppetavella.rate_limiter_client.clients.email_api.payloads;
 
 import java.util.List;
 
