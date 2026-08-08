@@ -11,6 +11,8 @@ import org.springframework.web.client.RestTemplate;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 @Service
 public class EmailAPIClient {
@@ -35,6 +37,35 @@ public class EmailAPIClient {
             
             return resp;
         }, executor);
+    }
+
+    /**
+     * 
+     * 
+     * @param howMany how many times to call the given task
+     * @param period in milliseconds
+     * @param cf 
+     * @param cb callback that handles the async result
+     * @param <T>
+     */
+    public <T> void sendEvery(int howMany, 
+                              long period, 
+                              CompletableFuture<T> cf,
+                              Function<T, T> cb) 
+    {
+        var scheduler = Executors.newSingleThreadScheduledExecutor(); 
+            scheduler.scheduleAtFixedRate(
+                    () -> {
+                        // Register callback without blocking
+                        cf.thenApply(cb).exceptionally(e -> {
+                            System.out.println(e);
+                            return null;
+                        }).join();
+                    }, 
+                    0, 
+                    period / howMany, 
+                    TimeUnit.MILLISECONDS
+            );
     }
     
 }

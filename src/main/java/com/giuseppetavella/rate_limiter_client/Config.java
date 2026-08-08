@@ -14,7 +14,7 @@ import java.io.InputStream;
 public class Config {
 
     @Bean
-    public EmailAPIServiceInfo loadEmailAPIServiceInfo() throws IOException {
+    public EmailAPIServiceInfo loadEmailAPIServiceInfo() {
         var objectMapper = new ObjectMapper();
         
         // Load service info
@@ -26,6 +26,8 @@ public class Config {
                     inputStream,
                     new TypeReference<EmailAPIServiceInfo>() {}
             );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
         return serviceInfo;

@@ -40,9 +40,13 @@ class EmailAPIClientTest {
         var serviceInfo = config.loadEmailAPIServiceInfo();
         var client = new EmailAPIClient(serviceInfo);
 
-        var resp = client.sendEmail("giuseppetavella8@gmail.com", "some subject", "some body").join();
+        // var resp = client.sendEmail("giuseppetavella8@gmail.com", "some subject", "some body").join();
 
-        System.out.println(resp.getBody());
+        client.sendEvery(1, 1000, () -> {
+            System.out.println("hello");
+        });
+        
+        // System.out.println(resp.getBody());
         // client.sendEmail("s","s","qq");
 
     }
