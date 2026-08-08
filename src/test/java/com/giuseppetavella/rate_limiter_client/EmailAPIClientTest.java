@@ -1,13 +1,14 @@
 package com.giuseppetavella.rate_limiter_client;
 
+import com.giuseppetavella.rate_limiter_client.clients.TooManyRequestsException;
+import com.giuseppetavella.rate_limiter_client.clients.email_api.EmailAPIClient;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class EmailAPIClientTest {
     @Test
@@ -15,13 +16,19 @@ class EmailAPIClientTest {
         var client = new EmailAPIClient();
 
         List<CompletableFuture<?>> cfs = new ArrayList<>();
+        cfs.add(client.sendEmail("giuseppetavella8@gmail.com","a subject","writing you something"));
+        cfs.add(client.sendEmail("s","s","qq"));
+        cfs.add(client.sendEmail("s","s","qq"));
         cfs.add(client.sendEmail("s","s","qq"));
         cfs.add(client.sendEmail("s","s","qq"));
         cfs.add(client.sendEmail("s","s","qq"));
         
         CompletableFuture.allOf(
           cfs.toArray(new CompletableFuture[0])
-        ).join();
+        ).exceptionally(ex -> {
+            assertEquals(TooManyRequestsException.class, ex.getClass());
+            return null;
+        }).join();
 
         for(var cf : cfs) {
             System.out.println(cf.join());            
