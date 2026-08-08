@@ -17,7 +17,7 @@ public class EmailAPIClient {
     private final ExecutorService executor;
     
     public EmailAPIClient() {
-        this.url = "http://localhost:9000/email-api";
+        this.url = "http://localhost:9100/email-api";
         this.executor = Executors.newVirtualThreadPerTaskExecutor();
     }
     

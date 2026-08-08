@@ -17,18 +17,14 @@ class EmailAPIClientTest {
 
         List<CompletableFuture<?>> cfs = new ArrayList<>();
         cfs.add(client.sendEmail("giuseppetavella8@gmail.com","a subject","writing you something"));
-        cfs.add(client.sendEmail("s","s","qq"));
-        cfs.add(client.sendEmail("s","s","qq"));
-        cfs.add(client.sendEmail("s","s","qq"));
-        cfs.add(client.sendEmail("s","s","qq"));
-        cfs.add(client.sendEmail("s","s","qq"));
+        cfs.add(client.sendEmail("giuseppetavella8@gmail.com","a subject","writing you something"));
+        cfs.add(client.sendEmail("giuseppetavella8@gmail.com","a subject","writing you something"));
+        cfs.add(client.sendEmail("giuseppetavella8@gmail.com","a subject","writing you something"));
+        cfs.add(client.sendEmail("giuseppetavella8@gmail.com","a subject","writing you something"));
         
         CompletableFuture.allOf(
           cfs.toArray(new CompletableFuture[0])
-        ).exceptionally(ex -> {
-            assertEquals(TooManyRequestsException.class, ex.getClass());
-            return null;
-        }).join();
+        ).join();
 
         for(var cf : cfs) {
             System.out.println(cf.join());            
