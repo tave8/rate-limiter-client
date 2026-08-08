@@ -11,15 +11,29 @@ public class Demo {
     static void main(String[] args) {
         var config = new Config();
         var serviceInfo = config.loadEmailAPIServiceInfo();
-        var client = new EmailAPIClient(serviceInfo);
+        var client1 = new EmailAPIClient(serviceInfo);
+        var client2 = new EmailAPIClient(serviceInfo);
 
-        CompletableFuture<ResponseEntity<?>> cf = client.sendEmail("giuseppetavella8@gmail.com", "some subject", "some body");
+        client1.setClientName("client-1");
+        client2.setClientName("client-2");
         
-        Function<ResponseEntity<?>, ResponseEntity<?>> cb = (resp) -> {
-            System.out.println("processed response: " + resp);
-            return resp;
+        Function<EmailAPIResponseInfo, EmailAPIResponseInfo> cb = (respInfo) -> {
+            System.out.println("[%s] status: %s, body: %s".formatted(
+                    respInfo.getClient().getClientName(), 
+                    respInfo.getResponse().getStatusCode(),
+                    respInfo.getResponse().getBody())
+            );
+            return respInfo;
         };
         
-        client.sendEvery(10, 1000, cf, cb);
+        Function<Throwable, EmailAPIResponseInfo> cbErr = (ex) -> {
+            System.out.println(ex.getMessage());
+            return null;
+        };
+
+        client1.sendEmailEvery(5, 1000, cb, cbErr, "giuseppetavella8@gmail.com", "some subject", "some body");
+        client1.sendEmailEvery(5, 1000, cb, cbErr, "giuseppetavella8@gmail.com", "some subject", "some body");
+        client1.sendEmailEvery(5, 1000, cb, cbErr, "giuseppetavella8@gmail.com", "some subject", "some body");
+        // client2.sendEmailEvery(2, 1000, cb, cbErr, "giuseppetavella8@gmail.com", "some subject", "some body");
     }
 }

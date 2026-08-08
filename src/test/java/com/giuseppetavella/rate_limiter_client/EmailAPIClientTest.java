@@ -13,24 +13,25 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class EmailAPIClientTest {
     @Test
     void test1() {
-        // var client = new EmailAPIClient();
-        //
-        // List<CompletableFuture<?>> cfs = new ArrayList<>();
-        // cfs.add(client.sendEmail("giuseppetavella8@gmail.com","a subject","writing you something"));
-        // cfs.add(client.sendEmail("giuseppetavella8@gmail.com","a subject","writing you something"));
-        // cfs.add(client.sendEmail("giuseppetavella8@gmail.com","a subject","writing you something"));
-        // cfs.add(client.sendEmail("giuseppetavella8@gmail.com","a subject","writing you something"));
-        // cfs.add(client.sendEmail("giuseppetavella8@gmail.com","a subject","writing you something"));
-        //
-        // CompletableFuture.allOf(
-        //   cfs.toArray(new CompletableFuture[0])
-        // ).join();
-        //
-        // for(var cf : cfs) {
-        //     System.out.println(cf.join());            
-        // }
-        
-        // client.sendEmail("s","s","qq");
+        var config = new Config();
+        var serviceInfo = config.loadEmailAPIServiceInfo();
+        var client = new EmailAPIClient(serviceInfo);
+
+        List<CompletableFuture<?>> cfs = new ArrayList<>();
+        cfs.add(client.sendEmail("giuseppetavella8@gmail.com","a subject","writing you something"));
+        cfs.add(client.sendEmail("giuseppetavella8@gmail.com","a subject","writing you something"));
+        cfs.add(client.sendEmail("giuseppetavella8@gmail.com","a subject","writing you something"));
+        cfs.add(client.sendEmail("giuseppetavella8@gmail.com","a subject","writing you something"));
+        cfs.add(client.sendEmail("giuseppetavella8@gmail.com","a subject","writing you something"));
+        cfs.add(client.sendEmail("giuseppetavella8@gmail.com","a subject","writing you something"));
+
+        CompletableFuture.allOf(
+          cfs.toArray(new CompletableFuture[0])
+        ).join();
+
+        for(var cf : cfs) {
+            System.out.println(cf.join());            
+        }
         
     }
 
@@ -42,9 +43,9 @@ class EmailAPIClientTest {
 
         // var resp = client.sendEmail("giuseppetavella8@gmail.com", "some subject", "some body").join();
 
-        client.sendEvery(1, 1000, () -> {
-            System.out.println("hello");
-        });
+        // client.sendEvery(1, 1000, () -> {
+        //     System.out.println("hello");
+        // });
         
         // System.out.println(resp.getBody());
         // client.sendEmail("s","s","qq");
