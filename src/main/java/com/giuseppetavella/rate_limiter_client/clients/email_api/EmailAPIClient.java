@@ -9,10 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -50,10 +47,10 @@ public class EmailAPIClient {
      * @param cb callback that handles the async result
      * @param <T>
      */
-    public <T> void sendEmailEvery(int howMany, long period,
-                                    Function<ResponseInfo, ResponseInfo> cb,
-                                    Function<Throwable, ResponseInfo> cbErr,
-                                    Supplier<EmailAPIPayloadToSendDTO> payloadSupplier) 
+    public <T> ScheduledExecutorService sendEmailEvery(int howMany, long period,
+                                                       Function<ResponseInfo, ResponseInfo> cb,
+                                                       Function<Throwable, ResponseInfo> cbErr,
+                                                       Supplier<EmailAPIPayloadToSendDTO> payloadSupplier) 
     {
         var scheduler = Executors.newSingleThreadScheduledExecutor(); 
         
@@ -71,6 +68,8 @@ public class EmailAPIClient {
                 period / howMany, 
                 TimeUnit.MILLISECONDS
         );
+        
+        return scheduler;
     }
 
     public void setClientName(String clientName) {
