@@ -1,6 +1,6 @@
 package com.giuseppetavella.rate_limiter_client.clients.email_api;
 
-import com.giuseppetavella.rate_limiter_client.EmailAPIResponseInfo;
+import com.giuseppetavella.rate_limiter_client.ResponseInfo;
 import com.giuseppetavella.rate_limiter_client.ServiceInfo;
 import com.giuseppetavella.rate_limiter_client.TooManyRequestsException;
 import com.giuseppetavella.rate_limiter_client.clients.email_api.payloads.EmailAPIPayloadToSendDTO;
@@ -13,8 +13,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 @Service
 public class EmailAPIClient {
@@ -28,9 +28,8 @@ public class EmailAPIClient {
     }
     
 
-    public CompletableFuture<ResponseEntity<?>> sendEmail(String recipient, String subject, String body)  {
+    public CompletableFuture<ResponseEntity<?>> sendEmail(EmailAPIPayloadToSendDTO payload)  {
         var restTemplate = new RestTemplate();
-        var payload = new EmailAPIPayloadToSendDTO(recipient, subject, body);
 
         return CompletableFuture.supplyAsync(() -> {
             var resp = restTemplate.postForEntity(serviceInfo.getServiceUrl(), payload, String.class);
@@ -51,26 +50,27 @@ public class EmailAPIClient {
      * @param cb callback that handles the async result
      * @param <T>
      */
-    public <T> void sendEmailEvery(int howMany, 
-                              long period,
-                              Function<EmailAPIResponseInfo, EmailAPIResponseInfo> cb,
-                              Function<Throwable, EmailAPIResponseInfo> cbErr,
-                               String recipient,
-                               String subject, 
-                               String body) 
+    public <T> void sendEmailEvery(int howMany, long period,
+                                    Function<ResponseInfo, ResponseInfo> cb,
+                                    Function<Throwable, ResponseInfo> cbErr,
+                                    Supplier<EmailAPIPayloadToSendDTO> payloadSupplier) 
     {
         var scheduler = Executors.newSingleThreadScheduledExecutor(); 
-            scheduler.scheduleAtFixedRate(
-                    () -> {
-                        sendEmail(recipient, subject, body)
-                                .thenApply(resp -> new EmailAPIResponseInfo(resp, this))
-                                .thenApply(cb)
-                                .exceptionally(cbErr);
-                    }, 
-                    0, 
-                    period / howMany, 
-                    TimeUnit.MILLISECONDS
-            );
+        
+        Runnable task = () -> {
+            
+            sendEmail(payloadSupplier.get())
+                    .thenApply(resp -> new EmailAPIResponseInfo(resp, this))
+                    .thenApply(cb)
+                    .exceptionally(cbErr);
+        };
+        
+        scheduler.scheduleAtFixedRate(
+                task, 
+                0, 
+                period / howMany, 
+                TimeUnit.MILLISECONDS
+        );
     }
 
     public void setClientName(String clientName) {

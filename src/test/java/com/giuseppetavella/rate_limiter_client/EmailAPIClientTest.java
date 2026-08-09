@@ -1,6 +1,7 @@
 package com.giuseppetavella.rate_limiter_client;
 
 import com.giuseppetavella.rate_limiter_client.clients.email_api.EmailAPIClient;
+import com.giuseppetavella.rate_limiter_client.clients.email_api.payloads.EmailAPIPayloadToSendDTO;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -18,12 +19,13 @@ class EmailAPIClientTest {
         var client = new EmailAPIClient(serviceInfo);
 
         List<CompletableFuture<?>> cfs = new ArrayList<>();
-        cfs.add(client.sendEmail("giuseppetavella8@gmail.com","a subject","writing you something"));
-        cfs.add(client.sendEmail("giuseppetavella8@gmail.com","a subject","writing you something"));
-        cfs.add(client.sendEmail("giuseppetavella8@gmail.com","a subject","writing you something"));
-        cfs.add(client.sendEmail("giuseppetavella8@gmail.com","a subject","writing you something"));
-        cfs.add(client.sendEmail("giuseppetavella8@gmail.com","a subject","writing you something"));
-        cfs.add(client.sendEmail("giuseppetavella8@gmail.com","a subject","writing you something"));
+        cfs.add(client.sendEmail(new EmailAPIPayloadToSendDTO("giuseppetavella8@gmail.com","a subject","writing you something")));
+        cfs.add(client.sendEmail(new EmailAPIPayloadToSendDTO("giuseppetavella8@gmail.com","a subject","writing you something")));
+        cfs.add(client.sendEmail(new EmailAPIPayloadToSendDTO("giuseppetavella8@gmail.com","a subject","writing you something")));
+        cfs.add(client.sendEmail(new EmailAPIPayloadToSendDTO("giuseppetavella8@gmail.com","a subject","writing you something")));
+        cfs.add(client.sendEmail(new EmailAPIPayloadToSendDTO("giuseppetavella8@gmail.com","a subject","writing you something")));
+        // cfs.add(client.sendEmail(new EmailAPIPayloadToSendDTO("giuseppetavella8@gmail.com","a subject","writing you something")));
+        // cfs.add(client.sendEmail(new EmailAPIPayloadToSendDTO("giuseppetavella8@gmail.com","a subject","writing you something")));
 
         CompletableFuture.allOf(
           cfs.toArray(new CompletableFuture[0])
