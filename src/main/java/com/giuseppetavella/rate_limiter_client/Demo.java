@@ -32,7 +32,7 @@ public class Demo {
             return null;
         };
 
-        client1.sendEmailEvery(100, 1000, cb, cbErr, () -> {
+        client1.sendEmailEvery(5, 1000, cb, cbErr, () -> {
             return new EmailAPIPayloadToSendDTO(
                     "giuseppetavella8@gmail.com",
                     "some subject",
