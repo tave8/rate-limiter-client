@@ -32,7 +32,10 @@ public class SimulationsController {
             if(command.equals("start")) {
                 emailAPISimulationService.start(new SimulationPayload(payload.clients(), payload.requests(), payload.period()));
             } else if (command.equals("stop")) {
+                
                 emailAPISimulationService.stop();
+                return "simulation stopped";
+                
             } else {
                 throw new RuntimeException("command %s not recognized.".formatted(command));
             }

@@ -1,6 +1,7 @@
 package com.giuseppetavella.rate_limiter_client;
 
 import com.giuseppetavella.rate_limiter_client.clients.email_api.EmailAPIClient;
+import com.giuseppetavella.rate_limiter_client.clients.email_api.EmailAPISimulationService;
 import com.giuseppetavella.rate_limiter_client.clients.email_api.payloads.EmailAPIPayloadToSendDTO;
 import org.junit.jupiter.api.Test;
 
@@ -52,5 +53,15 @@ class EmailAPIClientTest {
         // System.out.println(resp.getBody());
         // client.sendEmail("s","s","qq");
 
+    }
+    
+    @Test
+    void test3() throws InterruptedException {
+        var emailAPISimulationService = new EmailAPISimulationService();
+        
+        emailAPISimulationService.start(new SimulationPayload(1, 500, 1000L));
+        
+        Thread.sleep(10_000);
+        
     }
 }
