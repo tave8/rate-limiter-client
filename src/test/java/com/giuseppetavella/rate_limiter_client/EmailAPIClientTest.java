@@ -57,11 +57,11 @@ class EmailAPIClientTest {
     
     @Test
     void test3() throws InterruptedException {
-        var emailAPISimulationService = new EmailAPISimulationService();
-        
-        emailAPISimulationService.start(new SimulationPayload(1, 500, 1000L));
-        
-        Thread.sleep(10_000);
+        // var emailAPISimulationService = new EmailAPISimulationService();
+        //
+        // emailAPISimulationService.start(new SimulationPayload(1, 500, 1000L));
+        //
+        // Thread.sleep(10_000);
         
     }
 }

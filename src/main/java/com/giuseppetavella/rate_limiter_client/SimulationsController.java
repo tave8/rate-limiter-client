@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.*;
 public class SimulationsController {
 
     private final EmailAPISimulationService emailAPISimulationService;
-    
-    public SimulationsController(EmailAPISimulationService emailAPISimulationService) { // Dependency injected
+
+    public SimulationsController(EmailAPISimulationService emailAPISimulationService) {
         this.emailAPISimulationService = emailAPISimulationService;
     }
-    
+
     @PostMapping("/{service}/{command}")
     public String runSimulation(@PathVariable String service,
                                 @PathVariable String command,
@@ -22,28 +22,24 @@ public class SimulationsController {
                                 BindingResult validation
     )
     {
-        
-        if(validation.hasErrors()) {
+        if (validation.hasErrors()) {
             throw new RuntimeException("payload is invalid. details: " + validation.getAllErrors());
         }
-        
-        if(service.equals("email-api")) {
-            // Hardcoded for now - FIX
-            if(command.equals("start")) {
-                emailAPISimulationService.start(new SimulationPayload(payload.clients(), payload.requests(), payload.period()));
+
+        if (service.equals("email-api")) {
+            if (command.equals("start")) {
+                emailAPISimulationService.start(
+                        new SimulationPayload(payload.clients(), payload.requests(), payload.period(), payload.timeout())
+                );
             } else if (command.equals("stop")) {
-                
                 emailAPISimulationService.stop();
                 return "simulation stopped";
-                
             } else {
                 throw new RuntimeException("command %s not recognized.".formatted(command));
             }
-
         } else {
             throw new RuntimeException("service %s not registered".formatted(service));
         }
         return "new simulation started (and eventually stopped previous simulation)";
     }
-
 }
